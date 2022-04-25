@@ -3,6 +3,7 @@ package com.example.week9;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -40,6 +41,8 @@ public class PhotographActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photograph);
 
+        picture=(ImageView) findViewById(R.id.picture);
+
         photograph=(Button) findViewById(R.id.photograph);
         photograph.setOnClickListener(new View.OnClickListener(){
 
@@ -56,6 +59,9 @@ public class PhotographActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if(Build.VERSION.SDK_INT>=24){
+                    imageUri= FileProvider.getUriForFile(PhotographActivity.this,"com.example.week9.fileprovider",outputImage);
+                }
+                else{
                     imageUri=Uri.fromFile(outputImage);
                 }
                 //启动相机程序
@@ -111,6 +117,7 @@ public class PhotographActivity extends AppCompatActivity {
                 if (requestCode == RESULT_OK) {
                     try {
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                        picture.setImageBitmap(bitmap);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -118,7 +125,7 @@ public class PhotographActivity extends AppCompatActivity {
                 break;
             case CHOOSE_PHOTO:
                 if (resultCode==RESULT_OK){
-                    //帕努但手机系统版本号
+
                     if(Build.VERSION.SDK_INT>=19){
                         handleImageOnKitKat(data);
                     }
@@ -129,7 +136,6 @@ public class PhotographActivity extends AppCompatActivity {
                 break;
             default:
                 break;
-
         }
     }
 
